@@ -1,16 +1,8 @@
 <?php
 session_start();
 
-if(isset($_SESSION['loggedin'])){
-    $name = $_SESSION['username'];
-	echo "Logged in as $name<br/>";
-}
-
-else{
-    echo "<script>document.location='login-form.php'</script>";
-    exit;
-}
-
+require 'checklogin.php';
+require 'logoutbtn.php';
 require 'connect.php';
 
 // connected to database
@@ -170,7 +162,7 @@ if(!empty($_POST)){
 
 </form>
 
-<a href="userslist.php">Look at list of registered users</a>
+<a href="userslist.php">Look at a list of registered users</a>
 
 </body>
 

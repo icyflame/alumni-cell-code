@@ -17,7 +17,7 @@ while($row = mysql_fetch_assoc($res)){
 
 }
 
-echo "</table>"
+echo "</table>";
 
 echo "<p><b>Note that you can assign work only to members who have a position value less than yours</b></p>"
 
