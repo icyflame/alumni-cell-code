@@ -1,6 +1,16 @@
 <?php
 session_start();
 
+if(isset($_SESSION['loggedin'])){
+    $name = $_SESSION['username'];
+	echo "Logged in as $name<br/>";
+}
+
+else{
+    echo "<script>document.location='login-form.php'</script>";
+    exit;
+}
+
 require 'connect.php';
 
 // connected to database
@@ -23,7 +33,6 @@ if(!empty($_POST)){
 		if(!isset($_SESSION['loggedin']))
 			echo 'Log in before adding a task.<br/>';
 
-
 		else{
 			
 			$assignor = $_SESSION['username'];
@@ -44,51 +53,68 @@ if(!empty($_POST)){
 					echo "The name of the assignor does not exist in the database.";
 				}
 
-				else
-					if(mysql_query($query)){
-						echo "Successfully added task to database<br/>";
-						unset($_SESSION['loggedin']);
+				else{
 
-						// send an email to both the assignor and the assignee
+					$check = mysql_query("SELECT `position` FROM `users` WHERE username='$assignor'");
 
-						$res = mysql_query("SELECT email FROM `users` WHERE username='$assignee'");
+					$row = mysql_fetch_assoc($check);
+					$assignor_pos = $row['position'];
 
-						$res_rows = mysql_fetch_assoc($res);
+					$check = mysql_query("SELECT `position` FROM `users` WHERE username='$assignee'");
 
-						$assignee_mail = $res_rows['email'];
+				    $row = mysql_fetch_assoc($check);
+    				$assignee_pos = $row['position'];
 
-						$res = mysql_query("SELECT email FROM `users` WHERE username='$assignor'");
+					// check if the assignor has privileges to assign work to the assignor.
 
-						$res_rows = mysql_fetch_assoc($res);
+					if($assignor_pos > $assignee_pos){
 
-						$assignor_mail = $res_rows['email'];
-
-						// comppose the mail
-
-						$subject = "[work-assigned] New task";
-
-						$body = "
-						Some points about the work assigned:<br/><br/>
-						Description of the task:<br/>
-						<b>$desc</b><br/>
-						Deadline for this task:<br/>
-						<b>$date</b><br/>";
-
-						$headers = "From: noreply@yecindia.com";
-
-						$body_assignee = "A new task has been assigned to you by $assignor<br/><br/>";
-						$body_assignor = "You assigned a task to $assignee<br/><br/>";
-
-						// mail(to, subject, message, headers)
-
-						mail($assignee_mail, $subject, $body_assignee.$body, $headers);
-						mail($assignor_mail, $subject, $body_assignor.$body, $headers);
+						echo "You do not have the privileges to delegate work to $assignee";
 
 					}
 
-					else{
-						echo "Unable to add to database<br/>";
-						echo mysql_error();
+					else
+
+						if(mysql_query($query)){
+							echo "Successfully added task to database<br/>";
+							
+                            unset($_SESSION['loggedin']);
+
+						// send an email to both the assignor and the assignee
+
+							$res = mysql_query("SELECT email FROM `users` WHERE username='$assignee'");
+
+							$res_rows = mysql_fetch_assoc($res);
+
+							$assignee_mail = $res_rows['email'];
+
+							$res = mysql_query("SELECT email FROM `users` WHERE username='$assignor'");
+
+							$res_rows = mysql_fetch_assoc($res);
+
+							$assignor_mail = $res_rows['email'];
+
+						// comppose the mail
+
+							$subject = "[work-assigned] New task";
+
+							$body = "Some points about the work assigned:\n\nDescription of the task:\n$desc\nDeadline for this task:\n$date\n";
+
+							$headers = "From: noreply@yecindia.com";
+
+							$body_assignee = "A new task has been assigned to you by $assignor\n\n";
+							$body_assignor = "You assigned a task to $assignee\n\n";
+
+							mail($assignee_mail, $subject, $body_assignee.$body, $headers);
+							mail($assignor_mail, $subject, $body_assignor.$body, $headers);
+
+						}
+
+						else{
+							echo "Unable to add to database<br/>";
+							echo mysql_error();
+						}
+
 					}
 
 				}
@@ -143,6 +169,8 @@ if(!empty($_POST)){
 	<input type="submit" value="Assign"/>
 
 </form>
+
+<a href="userslist.php">Look at list of registered users</a>
 
 </body>
 

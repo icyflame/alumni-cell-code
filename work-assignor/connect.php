@@ -1,9 +1,6 @@
 <?php
 
-// if(!empty($_POST)){
-
-	// echo $_POST['un'].'<br/>';
-	// echo $_POST['pw'].'<br/>';
+session_start();
 
 $host = '166.62.8.13';
 
