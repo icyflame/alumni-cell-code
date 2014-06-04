@@ -11,7 +11,7 @@ require 'connect.php';
 
 if(!empty($_POST)){
 
-	if(isset($_POST['desc']) && isset($_POST['dl']) && isset($_POST['assignee'])){
+    if(isset($_POST['desc']) && isset($_POST['dl']) && isset($_POST['assignee'])){
 
 		echo $_POST['desc'].'<br/>';
 		echo $_POST['dl'].'<br/>';
@@ -26,10 +26,18 @@ if(!empty($_POST)){
 			echo 'Log in before adding a task.<br/>';
 
 		else{
-			
-			$assignor = $_SESSION['username'];
 
-			$query = "INSERT INTO `tasks` VALUES('$desc', '$assignor', '$assignee', '$date')";
+			// Finding the task ID
+
+			$check = mysql_query("SELECT COUNT(*) FROM `tasks`");                
+    		$row = mysql_fetch_array($check);
+            $taskid = $row[0] + 1;
+
+
+			$assignor = $_SESSION['username'];
+            $add = date('Y-m-d',time());
+
+			$query = "INSERT INTO `tasks` VALUES('$taskid', '$desc', '$assignor', '$assignee', '$date', '$add', 'Not Updated')";
 
 			// $query = "INSERT INTO `tasks` VALUES(".$desc.','."STR_TO_DATE(".$date.", '%m/%d/%Y')".','.$assignee.','.$assignor.')';
 
@@ -54,8 +62,8 @@ if(!empty($_POST)){
 
 					$check = mysql_query("SELECT `position` FROM `users` WHERE username='$assignee'");
 
-				    $row = mysql_fetch_assoc($check);
-    				$assignee_pos = $row['position'];
+					$row = mysql_fetch_assoc($check);
+					$assignee_pos = $row['position'];
 
 					// check if the assignor has privileges to assign work to the assignor.
 
@@ -70,7 +78,7 @@ if(!empty($_POST)){
 						if(mysql_query($query)){
 							echo "Successfully added task to database<br/>";
 							
-                            unset($_SESSION['loggedin']);
+							unset($_SESSION['loggedin']);
 
 						// send an email to both the assignor and the assignee
 
@@ -152,7 +160,27 @@ if(!empty($_POST)){
 				Assign this to: 
 			</td>
 			<td>
-				<input type="text" name="assignee"/> 
+<!--				<input type="text" name="assignee1"/> -->
+				<?php
+
+				$query = "SELECT * FROM `users` ORDER BY position DESC";
+
+				$res = mysql_query($query);
+
+				echo "<select name='assignee'>";
+
+				$startpos = -1;
+
+				while($row = mysql_fetch_assoc($res)){
+					$un = $row['username'];
+					$current_pos = $row['position'];
+
+					echo "<option value='$un'>$un - Position $current_pos</option>";
+				}
+
+				echo "</select>";
+
+				?>
 			</td>
 
 		</tr>
