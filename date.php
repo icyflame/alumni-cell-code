@@ -1,5 +1,5 @@
 <?php
 
-echo date('jS M, Y, H:i',time());
+echo date('m/d/Y',time());
 
 ?>
