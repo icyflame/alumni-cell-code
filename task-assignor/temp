@@ -1,4 +1,0 @@
-Added the logout buttons to both the start page and the assign work page.   
-Now, the user is redirected from the login form page to the loginpage
-file which gives a table listing the tasks that has been given to and by that
-user. It also has links to the assign task and the list of users page.

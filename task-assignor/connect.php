@@ -2,6 +2,8 @@
 
 session_start();
 
+echo date('jS M, Y, H:i',time());
+
 $host = '166.62.8.13';
 
 $name = 'testlearndo';
