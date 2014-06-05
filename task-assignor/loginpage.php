@@ -75,4 +75,5 @@ else{
 ?>
 
 <a href="assign-work.php">Assign a new task</a> <br/>
+<a href="display-table.php">View all ongoing tasks</a> <br/>
 <a href="userslist.php">Look at a list of all registered users</a> <br/>
