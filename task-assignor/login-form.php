@@ -59,9 +59,12 @@ if(!empty($_POST)){
 		username:<input type="text" name="un"/><br/>
 		password:<input type="password" name="pw"/><br/>
 
-		<input type="submit" value="register">
+		<input type="submit" value="login">
 
 	</form>
+	
+	<br/>
+	<a href='registration-form.php'>Register</a>
 
 </body>
 
