@@ -33,8 +33,7 @@ else{
 		$adddate = $row['adddate'];
 		$rem = $row['remarks'];
 
-		echo "<tr><td>$deadline</td><td>$desc<td>$nor</td><td>$nee</td><td>$addd
-		</td><td>$rem</td></tr>";
+		echo "<tr><td>$deadline</td><td>$desc<td>$nor</td><td>$nee</td><td>$adddate</td><td>$rem</td></tr>";
 
 	}
 
